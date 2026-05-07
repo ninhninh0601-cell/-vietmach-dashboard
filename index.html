@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VietMach Corp — Dashboard Quản Lý</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#eef0f4;--sf:#fff;--sf2:#f5f7fa;--sb:#15213b;--st:#8a96b0;--sa:#fff;--sh:rgba(255,255,255,.07);
+  --ac:#3b82f6;--ac2:#6366f1;--text:#1a2340;--t2:#6b7280;--bd:#e5e7eb;
+  --c1:#3b82f6;--c2:#10b981;--c3:#f59e0b;--c4:#8b5cf6;--c5:#ef4444;--c6:#ec4899;
+}
+body.dark{--bg:#0c1118;--sf:#161c2b;--sf2:#1c2438;--sb:#0c1118;--st:#4b5563;--text:#e2e8f0;--t2:#94a3b8;--bd:#1e2a3a;}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;font-size:13px}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:216px;min-width:216px;background:var(--sb);display:flex;flex-direction:column;height:100vh;transition:width .22s;z-index:20}
+.sidebar.col{width:56px;min-width:56px}
+.logo{padding:16px 13px 13px;border-bottom:1px solid rgba(255,255,255,.06);display:flex;align-items:center;gap:9px}
+.li2{width:30px;height:30px;background:var(--ac);border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.li2 i{color:#fff;font-size:15px}
+.lt{color:#fff;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden}
+.lt small{display:block;color:var(--st);font-size:10px;font-weight:400}
+.ns{padding:9px 9px 2px;color:var(--st);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap;overflow:hidden}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:1px 5px;border-radius:6px;cursor:pointer;color:var(--st);transition:all .13s;white-space:nowrap;overflow:hidden}
+.ni:hover{background:var(--sh);color:var(--sa)}
+.ni.act{background:rgba(59,130,246,.2);color:var(--ac)}
+.ni i{font-size:15px;flex-shrink:0}
+.ni .lb{font-size:12px}
+.nb{margin-left:auto;background:#ef4444;color:#fff;font-size:9px;padding:1px 5px;border-radius:10px;line-height:1.4}
+.sf{margin-top:auto;padding:9px 5px;border-top:1px solid rgba(255,255,255,.06)}
+
+/* ===== TOPBAR ===== */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.tb{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 18px;height:52px;display:flex;align-items:center;gap:9px;flex-shrink:0}
+.tbt{font-size:14px;font-weight:600;flex:1}
+.tbt small{font-size:11px;font-weight:400;color:var(--t2);margin-left:5px}
+.sbox{display:flex;align-items:center;gap:4px;background:var(--sf2);border:1px solid var(--bd);border-radius:7px;padding:5px 9px;width:175px}
+.sbox input{border:none;background:none;outline:none;font-size:12px;color:var(--text);width:100%}
+.sbox input::placeholder{color:var(--t2)}
+.ib{width:32px;height:32px;border:1px solid var(--bd);background:var(--sf);border-radius:7px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t2);transition:all .13s}
+.ib:hover{background:var(--sf2);color:var(--text)}
+.av{width:30px;height:30px;background:linear-gradient(135deg,#3b82f6,#6366f1);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:10px;font-weight:700;cursor:pointer}
+
+/* ===== CONTENT ===== */
+.cnt{flex:1;overflow-y:auto;padding:16px 18px}
+.pg{display:none}.pg.show{display:block}
+
+/* ===== KPI CARDS ===== */
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:13px 15px;cursor:pointer;transition:transform .15s}
+.kc:hover{transform:translateY(-2px)}
+.kct{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px}
+.kcl{font-size:10.5px;color:var(--t2);font-weight:500}
+.kci{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.kci i{font-size:14px}
+.kcv{font-size:19px;font-weight:700;margin-bottom:3px}
+.kct2{font-size:10.5px;display:flex;align-items:center;gap:3px}
+.tu{color:#10b981}.td{color:#ef4444}
+
+/* ===== CARDS & GRIDS ===== */
+.card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:13px 15px}
+.ch{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px}
+.ct{font-size:12.5px;font-weight:600}
+.cs{font-size:10.5px;color:var(--t2);margin-top:2px}
+.tg{display:flex;gap:2px;background:var(--sf2);border-radius:5px;padding:2px}
+.tgb{padding:3px 8px;border-radius:4px;font-size:11px;cursor:pointer;color:var(--t2)}
+.tgb.act{background:var(--sf);color:var(--text);font-weight:500}
+.r2{display:grid;grid-template-columns:1.8fr 1fr;gap:10px;margin-bottom:16px}
+.r2b{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.r3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px}
+
+/* ===== TABLE ===== */
+.ts{background:var(--sf);border:1px solid var(--bd);border-radius:10px}
+.ttb{display:flex;align-items:center;gap:7px;padding:11px 13px;border-bottom:1px solid var(--bd);flex-wrap:wrap}
+.ttbt{font-size:12.5px;font-weight:600;margin-right:auto}
+.fs{border:1px solid var(--bd);background:var(--sf);color:var(--text);font-size:11px;padding:4px 8px;border-radius:6px;outline:none;cursor:pointer}
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{padding:8px 11px;text-align:left;font-size:10px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--bd);background:var(--sf2);cursor:pointer;white-space:nowrap}
+.tbl th:hover{color:var(--text)}
+.tbl td{padding:9px 11px;border-bottom:1px solid var(--bd);font-size:12px;color:var(--text)}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr:hover{background:var(--sf2);cursor:pointer}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:600}
+.bg{background:rgba(16,185,129,.12);color:#059669}
+.bb{background:rgba(59,130,246,.12);color:#2563eb}
+.by{background:rgba(245,158,11,.12);color:#d97706}
+.br{background:rgba(239,68,68,.12);color:#dc2626}
+.bp{background:rgba(139,92,246,.12);color:#7c3aed}
+.pag{display:flex;align-items:center;justify-content:space-between;padding:9px 13px;border-top:1px solid var(--bd)}
+.pi{font-size:11px;color:var(--t2)}
+.pbs{display:flex;gap:2px}
+.pb{width:26px;height:26px;border:1px solid var(--bd);background:var(--sf);border-radius:5px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:var(--t2)}
+.pb.act{background:var(--ac);color:#fff;border-color:var(--ac)}
+.pb:hover:not(.act){background:var(--sf2)}
+
+/* ===== MISC ===== */
+.ld{display:flex;gap:12px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--t2)}
+.ld-dot{width:7px;height:7px;border-radius:2px;flex-shrink:0}
+.prg{height:5px;background:var(--bd);border-radius:3px;margin-top:5px}
+.prgf{height:100%;border-radius:3px}
+.af-item{display:flex;gap:9px;padding:8px 0;border-bottom:1px solid var(--bd)}
+.af-item:last-child{border-bottom:none}
+.af-ic{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.af-ic i{font-size:13px}
+.af-main{flex:1}
+.af-txt{font-size:11.5px;line-height:1.4}
+.af-time{font-size:10px;color:var(--t2);margin-top:1px}
+.spark{display:flex;align-items:flex-end;gap:2px;height:28px;margin-top:6px}
+.sp-bar{flex:1;border-radius:2px 2px 0 0;opacity:.6;transition:opacity .15s}
+.sp-bar:hover{opacity:1}
+.bell-pulse{position:absolute;top:5px;right:5px;width:7px;height:7px;background:#ef4444;border-radius:50%;border:2px solid var(--sf)}
+
+/* ===== MODAL ===== */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-bg.open{opacity:1;pointer-events:all}
+.modal{background:var(--sf);border-radius:14px;width:520px;max-width:95%;max-height:85vh;overflow:hidden;display:flex;flex-direction:column;transform:translateY(20px);transition:transform .2s;border:1px solid var(--bd)}
+.modal-bg.open .modal{transform:translateY(0)}
+.mh{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--bd)}
+.mht{font-size:14px;font-weight:700}
+.mc{padding:16px 18px;overflow-y:auto;flex:1}
+.mrow{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.mfield{background:var(--sf2);border-radius:8px;padding:10px 12px}
+.mfl{font-size:10px;color:var(--t2);margin-bottom:3px;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.mfv{font-size:13px;font-weight:500}
+.mfoot{padding:12px 18px;border-top:1px solid var(--bd);display:flex;gap:8px;justify-content:flex-end}
+.btn{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:1px solid var(--bd);background:var(--sf);color:var(--text);transition:all .13s}
+.btn:hover{background:var(--sf2)}
+.btn-prim{background:var(--ac);color:#fff;border-color:var(--ac)}
+.btn-prim:hover{background:#2563eb}
+.tl-steps{display:flex;flex-direction:column;gap:0;position:relative;margin:4px 0}
+.tl-step{display:flex;gap:12px;padding:10px 0;position:relative}
+.tl-dot{width:10px;height:10px;border-radius:50%;border:2px solid var(--bd);background:var(--sf);flex-shrink:0;margin-top:3px;z-index:1}
+.tl-dot.done{background:var(--c2);border-color:var(--c2)}
+.tl-dot.cur{background:var(--ac);border-color:var(--ac)}
+.tl-line{position:absolute;left:4px;top:18px;bottom:-2px;width:2px;background:var(--bd)}
+.tl-step:last-child .tl-line{display:none}
+.tl-txt{font-size:12px;font-weight:500}
+.tl-sub{font-size:10.5px;color:var(--t2);margin-top:1px}
+
+/* ===== FORM ===== */
+.qform{display:flex;flex-direction:column;gap:10px}
+.qform label{font-size:11px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px;display:block}
+.qinp{width:100%;border:1px solid var(--bd);background:var(--sf2);color:var(--text);font-size:12px;padding:7px 10px;border-radius:7px;outline:none}
+.qinp:focus{border-color:var(--ac)}
+.qrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+
+/* ===== CALENDAR ===== */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-head{font-size:10px;font-weight:700;color:var(--t2);text-align:center;padding:4px 0;text-transform:uppercase}
+.cal-day{padding:5px 3px;text-align:center;font-size:11px;border-radius:5px;cursor:pointer;min-height:32px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.cal-day:hover{background:var(--sf2)}
+.cal-day.today{background:rgba(59,130,246,.12);color:var(--ac);font-weight:700}
+.cal-day.has-ev .ev-dot{width:5px;height:5px;border-radius:50%}
+.cal-day.other{color:var(--t2);opacity:.4}
+
+/* ===== INVENTORY ===== */
+.inv-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--bd)}
+.inv-item:last-child{border-bottom:none}
+</style>
+</head>
+<body>
+
+<!-- MODAL CHI TIẾT ĐƠN HÀNG -->
+<div class="modal-bg" id="modalBg" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="mh">
+      <div>
+        <div class="mht" id="mTitle">Chi tiết đơn hàng</div>
+        <div style="font-size:11px;color:var(--t2);margin-top:2px" id="mSubtitle"></div>
+      </div>
+      <div class="ib" onclick="closeModalDirect()" style="border:none"><i class="ti ti-x"></i></div>
+    </div>
+    <div class="mc" id="modalContent"></div>
+    <div class="mfoot">
+      <button class="btn" onclick="closeModalDirect()">Đóng</button>
+      <button class="btn btn-prim" id="modalReportBtn">📄 Xuất báo cáo</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL THÊM ĐƠN HÀNG -->
+<div class="modal-bg" id="addModal" onclick="closeAddModal(event)">
+  <div class="modal" style="width:460px">
+    <div class="mh">
+      <div><div class="mht">Thêm đơn hàng mới</div><div style="font-size:11px;color:var(--t2);margin-top:2px">Điền thông tin đơn xuất khẩu</div></div>
+      <div class="ib" onclick="document.getElementById('addModal').classList.remove('open')" style="border:none"><i class="ti ti-x"></i></div>
+    </div>
+    <div class="mc">
+      <div class="qform">
+        <div class="qrow">
+          <div><label>Mã đơn hàng</label><input class="qinp" id="f-id" placeholder="XK-2026-..." value="XK-2026-040"></div>
+          <div><label>Khách hàng</label><input class="qinp" id="f-kh" placeholder="Tên công ty..."></div>
+        </div>
+        <div><label>Sản phẩm / Thiết bị</label><input class="qinp" id="f-sp" placeholder="Tên sản phẩm, model..."></div>
+        <div class="qrow">
+          <div><label>Thị trường</label>
+            <select class="qinp" id="f-tt"><option>Hàn Quốc</option><option>Nhật Bản</option><option>Đài Loan</option><option>Đức</option><option>Khác</option></select>
+          </div>
+          <div><label>Giá trị (VNĐ)</label><input class="qinp" id="f-gt" placeholder="500000000" type="number"></div>
+        </div>
+        <div class="qrow">
+          <div><label>Ngày giao hàng</label><input class="qinp" id="f-nd" type="date" value="2026-05-20"></div>
+          <div><label>Trạng thái</label>
+            <select class="qinp" id="f-ts"><option>Chờ duyệt</option><option>Đang xử lý</option><option>Hoàn tất</option></select>
+          </div>
+        </div>
+        <div><label>Ghi chú</label><input class="qinp" id="f-note" placeholder="Yêu cầu đặc biệt, ghi chú vận chuyển..."></div>
+      </div>
+    </div>
+    <div class="mfoot">
+      <button class="btn" onclick="document.getElementById('addModal').classList.remove('open')">Hủy</button>
+      <button class="btn btn-prim" onclick="addOrder()">Lưu đơn hàng</button>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT CHÍNH -->
+<div class="sidebar" id="SB">
+  <div class="logo">
+    <div class="li2"><i class="ti ti-settings-2"></i></div>
+    <div class="lt hc">VietMach Corp<small>Máy móc & Xuất khẩu</small></div>
+  </div>
+  <div style="overflow-y:auto;flex:1">
+    <div class="ns hc">Tổng quan</div>
+    <div class="ni act" onclick="gp('pg-dash',this,'Tổng quan')"><i class="ti ti-dashboard"></i><span class="lb hc">Tổng quan</span></div>
+    <div class="ni" onclick="gp('pg-analytics',this,'Phân tích')"><i class="ti ti-chart-line"></i><span class="lb hc">Phân tích</span></div>
+    <div class="ns hc">Kinh doanh</div>
+    <div class="ni" onclick="gp('pg-orders',this,'Đơn hàng xuất khẩu')"><i class="ti ti-shopping-cart"></i><span class="lb hc">Đơn hàng</span><span class="nb hc" id="orderBadge">8</span></div>
+    <div class="ni" onclick="gp('pg-customers',this,'Khách hàng')"><i class="ti ti-users"></i><span class="lb hc">Khách hàng</span></div>
+    <div class="ni" onclick="gp('pg-inventory',this,'Kho hàng')"><i class="ti ti-building-warehouse"></i><span class="lb hc">Kho hàng</span></div>
+    <div class="ns hc">Vận hành</div>
+    <div class="ni" onclick="gp('pg-calendar',this,'Lịch bảo trì')"><i class="ti ti-calendar"></i><span class="lb hc">Lịch bảo trì</span></div>
+    <div class="ni" onclick="gp('pg-reports',this,'Tạo báo cáo nhanh')"><i class="ti ti-file-text"></i><span class="lb hc">Báo cáo</span></div>
+    <div class="ns hc">Hệ thống</div>
+    <div class="ni" onclick="gp('pg-settings',this,'Cài đặt')"><i class="ti ti-settings"></i><span class="lb hc">Cài đặt</span></div>
+  </div>
+  <div class="sf">
+    <div class="ni" style="margin:0" onclick="toggleSB()"><i class="ti ti-layout-sidebar-left-collapse" id="sbIc"></i><span class="lb hc" id="sbLb">Thu gọn</span></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="tb">
+    <div class="tbt" id="ptitle">Tổng quan <small id="pdate"></small></div>
+    <div class="sbox"><i class="ti ti-search" style="font-size:13px;color:var(--t2)"></i><input type="text" placeholder="Tìm kiếm..." id="gs" oninput="filterOrd()"></div>
+    <div class="ib" onclick="toggleDark()" title="Tối/Sáng"><i class="ti ti-moon-stars" id="dkIco"></i></div>
+    <div class="ib" style="position:relative" onclick="gp('pg-orders',document.querySelector('.ni[onclick*=pg-orders]'),'Đơn hàng')">
+      <i class="ti ti-bell"></i><span class="bell-pulse"></span>
+    </div>
+    <div style="width:1px;height:20px;background:var(--bd)"></div>
+    <div class="av">NV</div>
+    <div style="line-height:1.2"><div style="font-size:11.5px;font-weight:600">Nhân Viên</div><div style="font-size:10px;color:var(--t2)">Hành chính</div></div>
+  </div>
+
+  <div class="cnt">
+
+    <!-- TRANG: TỔNG QUAN -->
+    <div class="pg show" id="pg-dash">
+      <div class="kg">
+        <div class="kc" style="border-left:3px solid var(--c1)">
+          <div class="kct"><span class="kcl">Doanh thu tháng</span><div class="kci" style="background:rgba(59,130,246,.1)"><i class="ti ti-currency-dong" style="color:var(--c1)"></i></div></div>
+          <div class="kcv">₫ 4,82 tỷ</div>
+          <div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+12,4% vs tháng trước</div>
+          <div class="spark" id="spk1"></div>
+        </div>
+        <div class="kc" style="border-left:3px solid var(--c2)">
+          <div class="kct"><span class="kcl">Đơn xuất khẩu</span><div class="kci" style="background:rgba(16,185,129,.1)"><i class="ti ti-plane" style="color:var(--c2)"></i></div></div>
+          <div class="kcv">38 đơn</div>
+          <div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+5 đơn so tháng trước</div>
+          <div class="spark" id="spk2"></div>
+        </div>
+        <div class="kc" style="border-left:3px solid var(--c3)">
+          <div class="kct"><span class="kcl">Khách hàng mới</span><div class="kci" style="background:rgba(245,158,11,.1)"><i class="ti ti-user-plus" style="color:var(--c3)"></i></div></div>
+          <div class="kcv">14 KH</div>
+          <div class="kct2 td"><i class="ti ti-trending-down" style="font-size:11px"></i>-2 so tháng trước</div>
+          <div class="spark" id="spk3"></div>
+        </div>
+        <div class="kc" style="border-left:3px solid var(--c4)">
+          <div class="kct"><span class="kcl">Tỷ lệ hoàn tất</span><div class="kci" style="background:rgba(139,92,246,.1)"><i class="ti ti-circle-check" style="color:var(--c4)"></i></div></div>
+          <div class="kcv">87,3%</div>
+          <div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+3,1% vs Q1</div>
+          <div class="spark" id="spk4"></div>
+        </div>
+      </div>
+      <div class="r2">
+        <div class="card">
+          <div class="ch">
+            <div><div class="ct">Doanh thu theo tháng — 2026</div><div class="cs">Tỷ VNĐ · Nội địa + Xuất khẩu</div></div>
+            <div class="tg"><div class="tgb act" onclick="swRev('bar',this)">Cột</div><div class="tgb" onclick="swRev('line',this)">Đường</div></div>
+          </div>
+          <div class="ld" style="margin-bottom:8px">
+            <div class="li"><span class="ld-dot" style="background:#3b82f6"></span>Nội địa</div>
+            <div class="li"><span class="ld-dot" style="background:#10b981"></span>Xuất khẩu</div>
+          </div>
+          <div style="position:relative;width:100%;height:195px"><canvas id="revC"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><div class="ct">Mục tiêu tháng 5</div><div class="cs">Đạt 96% kế hoạch</div></div></div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--t2)">Doanh thu</span><span style="font-weight:700;color:var(--c2)">96%</span></div><div class="prg"><div class="prgf" style="width:96%;background:var(--c2)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--t2)">Đơn hàng</span><span style="font-weight:700;color:var(--c1)">84%</span></div><div class="prg"><div class="prgf" style="width:84%;background:var(--c1)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--t2)">Khách hàng mới</span><span style="font-weight:700;color:var(--c3)">70%</span></div><div class="prg"><div class="prgf" style="width:70%;background:var(--c3)"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:4px"><span style="color:var(--t2)">XK Hàn Quốc</span><span style="font-weight:700;color:var(--c4)">110%</span></div><div class="prg"><div class="prgf" style="width:100%;background:var(--c4)"></div></div></div>
+          </div>
+          <div style="position:relative;width:100%;height:130px;margin-top:12px"><canvas id="donutC"></canvas></div>
+          <div style="display:flex;flex-direction:column;gap:4px;margin-top:8px">
+            <div style="display:flex;justify-content:space-between"><div class="li"><span class="ld-dot" style="background:#3b82f6"></span>Đang xử lý</div><strong style="font-size:11px">42%</strong></div>
+            <div style="display:flex;justify-content:space-between"><div class="li"><span class="ld-dot" style="background:#10b981"></span>Hoàn tất</div><strong style="font-size:11px">35%</strong></div>
+            <div style="display:flex;justify-content:space-between"><div class="li"><span class="ld-dot" style="background:#f59e0b"></span>Chờ duyệt</div><strong style="font-size:11px">15%</strong></div>
+            <div style="display:flex;justify-content:space-between"><div class="li"><span class="ld-dot" style="background:#ef4444"></span>Đã hủy</div><strong style="font-size:11px">8%</strong></div>
+          </div>
+        </div>
+      </div>
+      <div class="r2b">
+        <div class="card">
+          <div class="ch"><div><div class="ct">Hoạt động gần đây</div><div class="cs">Cập nhật mới nhất</div></div></div>
+          <div id="actFeed"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><div class="ct">Top thị trường xuất khẩu</div><div class="cs">Tháng 5/2026 · Tỷ VNĐ</div></div></div>
+          <div style="position:relative;width:100%;height:175px"><canvas id="mktC"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANG: PHÂN TÍCH -->
+    <div class="pg" id="pg-analytics">
+      <div class="kg">
+        <div class="kc" style="border-left:3px solid var(--c1)"><div class="kct"><span class="kcl">Tổng doanh thu Q2</span><div class="kci" style="background:rgba(59,130,246,.1)"><i class="ti ti-chart-bar" style="color:var(--c1)"></i></div></div><div class="kcv">₫ 14,2 tỷ</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+8,7% vs Q1</div></div>
+        <div class="kc" style="border-left:3px solid var(--c2)"><div class="kct"><span class="kcl">Tỷ lệ hoàn tất</span><div class="kci" style="background:rgba(16,185,129,.1)"><i class="ti ti-circle-check" style="color:var(--c2)"></i></div></div><div class="kcv">87,3%</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+3,1% vs Q1</div></div>
+        <div class="kc" style="border-left:3px solid var(--c3)"><div class="kct"><span class="kcl">Giá trị TB/đơn</span><div class="kci" style="background:rgba(245,158,11,.1)"><i class="ti ti-receipt" style="color:var(--c3)"></i></div></div><div class="kcv">₫ 374M</div><div class="kct2 td"><i class="ti ti-trending-down" style="font-size:11px"></i>-2,4% vs Q1</div></div>
+        <div class="kc" style="border-left:3px solid var(--c4)"><div class="kct"><span class="kcl">Thị trường</span><div class="kci" style="background:rgba(139,92,246,.1)"><i class="ti ti-world" style="color:var(--c4)"></i></div></div><div class="kcv">4 nước</div><div class="kct2 tu"><i class="ti ti-plus" style="font-size:11px"></i>Đức — mới thêm</div></div>
+      </div>
+      <div class="r2">
+        <div class="card">
+          <div class="ch"><div><div class="ct">Doanh thu xếp chồng theo thị trường</div><div class="cs">So sánh T1–T5/2026</div></div></div>
+          <div class="ld" style="margin-bottom:8px">
+            <div class="li"><span class="ld-dot" style="background:#3b82f6"></span>Hàn Quốc</div>
+            <div class="li"><span class="ld-dot" style="background:#10b981"></span>Nhật Bản</div>
+            <div class="li"><span class="ld-dot" style="background:#f59e0b"></span>Đài Loan</div>
+            <div class="li"><span class="ld-dot" style="background:#8b5cf6"></span>Đức</div>
+          </div>
+          <div style="position:relative;width:100%;height:200px"><canvas id="mktStack"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><div class="ct">Cơ cấu thị trường</div><div class="cs">% giá trị xuất khẩu</div></div></div>
+          <div style="position:relative;width:100%;height:130px"><canvas id="mktPie"></canvas></div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:10px">
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="color:var(--t2)">Hàn Quốc</span><strong>45%</strong></div><div class="prg"><div class="prgf" style="width:45%;background:#3b82f6"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="color:var(--t2)">Nhật Bản</span><strong>28%</strong></div><div class="prg"><div class="prgf" style="width:28%;background:#10b981"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="color:var(--t2)">Đài Loan</span><strong>18%</strong></div><div class="prg"><div class="prgf" style="width:18%;background:#f59e0b"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span style="color:var(--t2)">Đức</span><strong>9%</strong></div><div class="prg"><div class="prgf" style="width:9%;background:#8b5cf6"></div></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANG: ĐƠN HÀNG -->
+    <div class="pg" id="pg-orders">
+      <div class="kg">
+        <div class="kc" style="border-left:3px solid var(--c1)"><div class="kct"><span class="kcl">Tổng đơn tháng</span><div class="kci" style="background:rgba(59,130,246,.1)"><i class="ti ti-list" style="color:var(--c1)"></i></div></div><div class="kcv" id="totalOrd">10 đơn</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+5 so tháng trước</div></div>
+        <div class="kc" style="border-left:3px solid var(--c3)"><div class="kct"><span class="kcl">Chờ duyệt</span><div class="kci" style="background:rgba(245,158,11,.1)"><i class="ti ti-clock" style="color:var(--c3)"></i></div></div><div class="kcv" id="pendOrd">1 đơn</div><div class="kct2 td"><i class="ti ti-alert-circle" style="font-size:11px"></i>Cần xử lý</div></div>
+        <div class="kc" style="border-left:3px solid var(--c2)"><div class="kct"><span class="kcl">Hoàn tất</span><div class="kci" style="background:rgba(16,185,129,.1)"><i class="ti ti-circle-check" style="color:var(--c2)"></i></div></div><div class="kcv" id="doneOrd">4 đơn</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>87,3% tỷ lệ</div></div>
+        <div class="kc" style="border-left:3px solid var(--c5)"><div class="kct"><span class="kcl">Đã hủy</span><div class="kci" style="background:rgba(239,68,68,.1)"><i class="ti ti-x" style="color:var(--c5)"></i></div></div><div class="kcv" id="cancelOrd">1 đơn</div><div class="kct2 td"><i class="ti ti-trending-down" style="font-size:11px"></i>-1 so tháng</div></div>
+      </div>
+      <div class="ts">
+        <div class="ttb">
+          <div class="ttbt">Danh sách đơn hàng xuất khẩu</div>
+          <div class="sbox" style="width:140px"><i class="ti ti-search" style="font-size:12px;color:var(--t2)"></i><input type="text" placeholder="Tìm kiếm..." id="osearch" oninput="filterOrd()"></div>
+          <select class="fs" id="stF" onchange="filterOrd()"><option value="">Tất cả</option><option>Hoàn tất</option><option>Đang xử lý</option><option>Chờ duyệt</option><option>Đã hủy</option></select>
+          <select class="fs" id="ctF" onchange="filterOrd()"><option value="">Tất cả TT</option><option>Hàn Quốc</option><option>Nhật Bản</option><option>Đài Loan</option><option>Đức</option></select>
+          <button class="btn btn-prim" onclick="document.getElementById('addModal').classList.add('open')" style="padding:5px 12px;font-size:11px"><i class="ti ti-plus" style="font-size:12px;vertical-align:-1px"></i> Thêm đơn</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="tbl">
+            <thead><tr>
+              <th onclick="sortO(0)">Mã đơn <span style="opacity:.4;font-size:9px">↕</span></th>
+              <th onclick="sortO(1)">Khách hàng <span style="opacity:.4;font-size:9px">↕</span></th>
+              <th onclick="sortO(2)">Sản phẩm <span style="opacity:.4;font-size:9px">↕</span></th>
+              <th onclick="sortO(3)">Thị trường <span style="opacity:.4;font-size:9px">↕</span></th>
+              <th onclick="sortO(4)">Giá trị <span style="opacity:.4;font-size:9px">↕</span></th>
+              <th onclick="sortO(5)">Ngày giao <span style="opacity:.4;font-size:9px">↕</span></th>
+              <th onclick="sortO(6)">Trạng thái <span style="opacity:.4;font-size:9px">↕</span></th>
+              <th>Thao tác</th>
+            </tr></thead>
+            <tbody id="ordBody"></tbody>
+          </table>
+        </div>
+        <div class="pag">
+          <div class="pi" id="ordPI">Hiển thị 1–10 / 10 đơn</div>
+          <div class="pbs"><div class="pb"><i class="ti ti-chevron-left" style="font-size:11px"></i></div><div class="pb act">1</div><div class="pb">2</div><div class="pb"><i class="ti ti-chevron-right" style="font-size:11px"></i></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANG: KHÁCH HÀNG -->
+    <div class="pg" id="pg-customers">
+      <div class="kg">
+        <div class="kc" style="border-left:3px solid var(--c1)"><div class="kct"><span class="kcl">Tổng khách hàng</span><div class="kci" style="background:rgba(59,130,246,.1)"><i class="ti ti-users" style="color:var(--c1)"></i></div></div><div class="kcv">47 KH</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+14 mới năm 2026</div></div>
+        <div class="kc" style="border-left:3px solid var(--c3)"><div class="kct"><span class="kcl">VIP (≥1 tỷ/tháng)</span><div class="kci" style="background:rgba(245,158,11,.1)"><i class="ti ti-star" style="color:var(--c3)"></i></div></div><div class="kcv">8 KH</div><div class="kct2 tu"><i class="ti ti-check" style="font-size:11px"></i>Ổn định</div></div>
+        <div class="kc" style="border-left:3px solid var(--c2)"><div class="kct"><span class="kcl">Tái mua hàng</span><div class="kci" style="background:rgba(16,185,129,.1)"><i class="ti ti-refresh" style="color:var(--c2)"></i></div></div><div class="kcv">73%</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+5% vs 2025</div></div>
+        <div class="kc" style="border-left:3px solid var(--c4)"><div class="kct"><span class="kcl">Quốc gia</span><div class="kci" style="background:rgba(139,92,246,.1)"><i class="ti ti-world" style="color:var(--c4)"></i></div></div><div class="kcv">4 nước</div><div class="kct2 tu"><i class="ti ti-plus" style="font-size:11px"></i>Đức — mới nhất</div></div>
+      </div>
+      <div class="ts">
+        <div class="ttb"><div class="ttbt">Danh sách khách hàng</div></div>
+        <table class="tbl">
+          <thead><tr><th>Khách hàng</th><th>Quốc gia</th><th>Phân loại</th><th>Tổng đơn</th><th>Doanh thu</th><th>Lần mua gần nhất</th><th>Thanh toán</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Hyundai Machinery Co.</strong></td><td>🇰🇷 Hàn Quốc</td><td><span class="badge by">⭐ VIP</span></td><td>12</td><td style="font-weight:700">₫ 2,4 tỷ</td><td>07/05/2026</td><td><span class="badge bg">Đúng hạn</span></td></tr>
+            <tr><td><strong>LG Electronics</strong></td><td>🇰🇷 Hàn Quốc</td><td><span class="badge by">⭐ VIP</span></td><td>7</td><td style="font-weight:700">₫ 1,6 tỷ</td><td>05/05/2026</td><td><span class="badge bg">Đúng hạn</span></td></tr>
+            <tr><td><strong>Mitsubishi Corporation</strong></td><td>🇯🇵 Nhật Bản</td><td><span class="badge by">⭐ VIP</span></td><td>9</td><td style="font-weight:700">₫ 1,9 tỷ</td><td>02/05/2026</td><td><span class="badge bg">Đúng hạn</span></td></tr>
+            <tr><td><strong>Toyota Industries</strong></td><td>🇯🇵 Nhật Bản</td><td><span class="badge bb">Thường xuyên</span></td><td>5</td><td style="font-weight:700">₫ 975M</td><td>03/05/2026</td><td><span class="badge bg">Đúng hạn</span></td></tr>
+            <tr><td><strong>TSMC Equipment</strong></td><td>🇹🇼 Đài Loan</td><td><span class="badge bb">Thường xuyên</span></td><td>6</td><td style="font-weight:700">₫ 1,1 tỷ</td><td>08/05/2026</td><td><span class="badge bg">Đúng hạn</span></td></tr>
+            <tr><td><strong>Foxconn Technology</strong></td><td>🇹🇼 Đài Loan</td><td><span class="badge bb">Thường xuyên</span></td><td>4</td><td style="font-weight:700">₫ 830M</td><td>01/05/2026</td><td><span class="badge by">Trễ 3 ngày</span></td></tr>
+            <tr><td><strong>BASF Engineering</strong></td><td>🇩🇪 Đức</td><td><span class="badge bp">Mới</span></td><td>2</td><td style="font-weight:700">₫ 275M</td><td>04/05/2026</td><td><span class="badge bg">Đúng hạn</span></td></tr>
+            <tr><td><strong>Siemens AG</strong></td><td>🇩🇪 Đức</td><td><span class="badge bp">Mới</span></td><td>1</td><td style="font-weight:700">₫ 145M</td><td>22/04/2026</td><td><span class="badge bg">Đúng hạn</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TRANG: KHO HÀNG -->
+    <div class="pg" id="pg-inventory">
+      <div class="kg">
+        <div class="kc" style="border-left:3px solid var(--c1)"><div class="kct"><span class="kcl">Tổng SKU</span><div class="kci" style="background:rgba(59,130,246,.1)"><i class="ti ti-package" style="color:var(--c1)"></i></div></div><div class="kcv">86 SP</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+4 mới tháng này</div></div>
+        <div class="kc" style="border-left:3px solid var(--c5)"><div class="kct"><span class="kcl">Tồn kho thấp</span><div class="kci" style="background:rgba(239,68,68,.1)"><i class="ti ti-alert-triangle" style="color:var(--c5)"></i></div></div><div class="kcv">7 SP</div><div class="kct2 td"><i class="ti ti-alert-circle" style="font-size:11px"></i>Cần nhập thêm</div></div>
+        <div class="kc" style="border-left:3px solid var(--c2)"><div class="kct"><span class="kcl">Xuất kho tháng</span><div class="kci" style="background:rgba(16,185,129,.1)"><i class="ti ti-truck" style="color:var(--c2)"></i></div></div><div class="kcv">54 SP</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+12 vs tháng trước</div></div>
+        <div class="kc" style="border-left:3px solid var(--c3)"><div class="kct"><span class="kcl">Giá trị kho</span><div class="kci" style="background:rgba(245,158,11,.1)"><i class="ti ti-building-warehouse" style="color:var(--c3)"></i></div></div><div class="kcv">₫ 18,4 tỷ</div><div class="kct2 tu"><i class="ti ti-trending-up" style="font-size:11px"></i>+2,1 tỷ</div></div>
+      </div>
+      <div class="r2">
+        <div class="ts">
+          <div class="ttb"><div class="ttbt">Danh mục tồn kho</div><span class="badge br">7 cần nhập</span></div>
+          <table class="tbl">
+            <thead><tr><th>Sản phẩm</th><th>Danh mục</th><th>Tồn kho</th><th>Trạng thái</th><th>Mức tồn</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Robot hàn RH-6</strong></td><td>Robot CN</td><td>2 đv</td><td><span class="badge br">Tồn thấp</span></td><td><div style="width:80px"><div class="prg"><div class="prgf" style="width:13%;background:#ef4444"></div></div></div></td></tr>
+              <tr><td><strong>Máy tiện CNC MT-1000</strong></td><td>Máy CNC</td><td>5 đv</td><td><span class="badge by">Trung bình</span></td><td><div style="width:80px"><div class="prg"><div class="prgf" style="width:33%;background:#f59e0b"></div></div></div></td></tr>
+              <tr><td><strong>Máy ép thủy lực HY-500</strong></td><td>Máy ép</td><td>12 đv</td><td><span class="badge bg">Đủ hàng</span></td><td><div style="width:80px"><div class="prg"><div class="prgf" style="width:80%;background:#10b981"></div></div></div></td></tr>
+              <tr><td><strong>Thiết bị lọc khí FG-80</strong></td><td>TB lọc</td><td>18 đv</td><td><span class="badge bg">Đủ hàng</span></td><td><div style="width:80px"><div class="prg"><div class="prgf" style="width:90%;background:#10b981"></div></div></div></td></tr>
+              <tr><td><strong>Băng tải CT-200</strong></td><td>Vận chuyển</td><td>3 đv</td><td><span class="badge by">Trung bình</span></td><td><div style="width:80px"><div class="prg"><div class="prgf" style="width:20%;background:#f59e0b"></div></div></div></td></tr>
+              <tr><td><strong>Xe nâng điện XN-3T</strong></td><td>Xe nâng</td><td>8 đv</td><td><span class="badge bg">Đủ hàng</span></td><td><div style="width:80px"><div class="prg"><div class="prgf" style="width:65%;background:#10b981"></div></div></div></td></tr>
+              <tr><td><strong>Máy dập DA-100</strong></td><td>Máy dập</td><td>1 đv</td><td><span class="badge br">Tồn thấp</span></td><td><div style="width:80px"><div class="prg"><div class="prgf" style="width:6%;background:#ef4444"></div></div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="ch"><div><div class="ct">Xuất / Nhập kho theo tháng</div><div class="cs">T1–T5/2026</div></div></div>
+          <div style="position:relative;width:100%;height:260px"><canvas id="invC"></canvas></div>
+          <div class="ld" style="margin-top:8px">
+            <div class="li"><span class="ld-dot" style="background:#3b82f6"></span>Xuất kho</div>
+            <div class="li"><span class="ld-dot" style="background:#10b981"></span>Nhập kho</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANG: LỊCH BẢO TRÌ -->
+    <div class="pg" id="pg-calendar">
+      <div class="r2">
+        <div class="card">
+          <div class="ch">
+            <div><div class="ct">Lịch bảo trì tháng 5/2026</div><div class="cs">Chấm màu = có lịch bảo trì</div></div>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+        </div>
+        <div class="card">
+          <div class="ch"><div><div class="ct">Tiến độ bảo trì</div><div class="cs">6 đơn đang xử lý</div></div><span class="badge bb">6 đang làm</span></div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div class="af-item"><div class="af-ic" style="background:rgba(59,130,246,.1)"><i class="ti ti-cpu" style="color:var(--c1)"></i></div><div class="af-main"><div class="af-txt"><strong>M-CNC-01</strong> Máy tiện CNC MT-1000</div><div style="font-size:10px;color:var(--t2);margin-top:1px">KTV: Nguyễn Văn Hùng · 05–10/05</div><div style="margin-top:4px;display:flex;align-items:center;gap:6px"><div class="prg" style="width:100px"><div class="prgf" style="width:50%;background:var(--c1)"></div></div><span style="font-size:10px;color:var(--t2)">50%</span></div></div><span class="badge bb">Đang làm</span></div>
+            <div class="af-item"><div class="af-ic" style="background:rgba(245,158,11,.1)"><i class="ti ti-tool" style="color:var(--c3)"></i></div><div class="af-main"><div class="af-txt"><strong>M-RB-03</strong> Robot hàn RH-6 #3</div><div style="font-size:10px;color:var(--t2);margin-top:1px">KTV: Trần Minh Tuấn · 04–08/05</div><div style="margin-top:4px;display:flex;align-items:center;gap:6px"><div class="prg" style="width:100px"><div class="prgf" style="width:75%;background:var(--c3)"></div></div><span style="font-size:10px;color:var(--t2)">75%</span></div></div><span class="badge by">Chờ phụ tùng</span></div>
+            <div class="af-item"><div class="af-ic" style="background:rgba(16,185,129,.1)"><i class="ti ti-settings" style="color:var(--c2)"></i></div><div class="af-main"><div class="af-txt"><strong>M-EP-02</strong> Máy ép HY-500 #2</div><div style="font-size:10px;color:var(--t2);margin-top:1px">KTV: Lê Quốc Bảo · 06–12/05</div><div style="margin-top:4px;display:flex;align-items:center;gap:6px"><div class="prg" style="width:100px"><div class="prgf" style="width:20%;background:var(--c2)"></div></div><span style="font-size:10px;color:var(--t2)">20%</span></div></div><span class="badge bb">Đang làm</span></div>
+            <div class="af-item"><div class="af-ic" style="background:rgba(16,185,129,.1)"><i class="ti ti-circle-check" style="color:var(--c2)"></i></div><div class="af-main"><div class="af-txt"><strong>M-BT-05</strong> Băng tải CT-200 #5</div><div style="font-size:10px;color:var(--t2);margin-top:1px">KTV: Phạm Thị Lan · 07–09/05</div><div style="margin-top:4px;display:flex;align-items:center;gap:6px"><div class="prg" style="width:100px"><div class="prgf" style="width:100%;background:var(--c2)"></div></div><span style="font-size:10px;color:var(--t2)">100%</span></div></div><span class="badge bg">Xong</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANG: BÁO CÁO -->
+    <div class="pg" id="pg-reports">
+      <div class="card">
+        <div class="ch"><div><div class="ct">Tạo báo cáo nhanh — VI / EN / 한국어</div><div class="cs">Chọn loại báo cáo để tạo file 3 ngôn ngữ</div></div></div>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:4px">
+          <div class="rpt-card" style="border-top:3px solid var(--c1)" onclick="alert('Tính năng này kết nối với AI để tạo báo cáo.\nMở file trong Claude.ai để sử dụng đầy đủ!')">
+            <div style="width:30px;height:30px;background:rgba(59,130,246,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:7px"><i class="ti ti-file-check" style="color:var(--c1);font-size:15px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:2px">Kiểm tra sản phẩm</div>
+            <div style="font-size:10.5px;color:var(--t2)">Product Inspection</div>
+            <div style="font-size:10px;color:var(--t2)">제품 검사 보고서</div>
+          </div>
+          <div class="rpt-card" style="border-top:3px solid var(--c2)" onclick="alert('Tính năng này kết nối với AI để tạo báo cáo.\nMở file trong Claude.ai để sử dụng đầy đủ!')">
+            <div style="width:30px;height:30px;background:rgba(16,185,129,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:7px"><i class="ti ti-device-desktop-check" style="color:var(--c2);font-size:15px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:2px">Cài đặt máy</div>
+            <div style="font-size:10.5px;color:var(--t2)">Machine Setup Report</div>
+            <div style="font-size:10px;color:var(--t2)">기계 설치 보고서</div>
+          </div>
+          <div class="rpt-card" style="border-top:3px solid var(--c3)" onclick="alert('Tính năng này kết nối với AI để tạo báo cáo.\nMở file trong Claude.ai để sử dụng đầy đủ!')">
+            <div style="width:30px;height:30px;background:rgba(245,158,11,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:7px"><i class="ti ti-tool" style="color:var(--c3);font-size:15px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:2px">Sửa chữa máy</div>
+            <div style="font-size:10.5px;color:var(--t2)">Machine Repair Report</div>
+            <div style="font-size:10px;color:var(--t2)">기계 수리 보고서</div>
+          </div>
+          <div class="rpt-card" style="border-top:3px solid var(--c4)" onclick="alert('Tính năng này kết nối với AI để tạo báo cáo.\nMở file trong Claude.ai để sử dụng đầy đủ!')">
+            <div style="width:30px;height:30px;background:rgba(139,92,246,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:7px"><i class="ti ti-versions" style="color:var(--c4);font-size:15px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:2px">So sánh mẫu SP</div>
+            <div style="font-size:10.5px;color:var(--t2)">Sample Comparison</div>
+            <div style="font-size:10px;color:var(--t2)">샘플 비교 보고서</div>
+          </div>
+          <div class="rpt-card" style="border-top:3px solid var(--c5)" onclick="alert('Tính năng này kết nối với AI để tạo báo cáo.\nMở file trong Claude.ai để sử dụng đầy đủ!')">
+            <div style="width:30px;height:30px;background:rgba(239,68,68,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:7px"><i class="ti ti-box" style="color:var(--c5);font-size:15px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:2px">Thiết kế đóng gói</div>
+            <div style="font-size:10.5px;color:var(--t2)">Packaging Design</div>
+            <div style="font-size:10px;color:var(--t2)">포장 설계 보고서</div>
+          </div>
+          <div class="rpt-card" style="border-top:3px solid var(--c6)" onclick="alert('Tính năng này kết nối với AI để tạo báo cáo.\nMở file trong Claude.ai để sử dụng đầy đủ!')">
+            <div style="width:30px;height:30px;background:rgba(236,72,153,.1);border-radius:7px;display:flex;align-items:center;justify-content:center;margin-bottom:7px"><i class="ti ti-chart-bar" style="color:var(--c6);font-size:15px"></i></div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:2px">Báo cáo doanh thu</div>
+            <div style="font-size:10.5px;color:var(--t2)">Revenue Report</div>
+            <div style="font-size:10px;color:var(--t2)">매출 보고서</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TRANG: CÀI ĐẶT -->
+    <div class="pg" id="pg-settings">
+      <div class="card">
+        <div class="ch"><div><div class="ct">Cài đặt hệ thống</div><div class="cs">VietMach Dashboard v3.0</div></div></div>
+        <div style="display:flex;flex-direction:column;gap:10px;margin-top:4px">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px;background:var(--sf2);border-radius:8px"><div><div style="font-size:12.5px;font-weight:500">Chế độ tối</div><div style="font-size:10.5px;color:var(--t2)">Bật giao diện tối/sáng</div></div><div onclick="toggleDark()" style="width:38px;height:20px;background:var(--ac);border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:flex-end;padding:2px"><div style="width:16px;height:16px;background:#fff;border-radius:50%"></div></div></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px;background:var(--sf2);border-radius:8px"><div><div style="font-size:12.5px;font-weight:500">Ngôn ngữ báo cáo mặc định</div><div style="font-size:10.5px;color:var(--t2)">Tiếng Việt / English / 한국어</div></div><select class="fs" style="font-size:11px;padding:5px 9px"><option>Tiếng Việt</option><option>English</option><option>한국어</option></select></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px;background:var(--sf2);border-radius:8px"><div><div style="font-size:12.5px;font-weight:500">Đối tác xuất khẩu</div><div style="font-size:10.5px;color:var(--t2)">Hàn Quốc · Nhật Bản · Đài Loan · Đức</div></div><span class="badge bg">4 thị trường</span></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:11px;background:var(--sf2);border-radius:8px"><div><div style="font-size:12.5px;font-weight:500">Phiên bản</div><div style="font-size:10.5px;color:var(--t2)">Dashboard v3.0 — VietMach Corp</div></div><span class="badge bp">v3.0</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end .cnt -->
+</div><!-- end .main -->
+
+<style>
+.rpt-card{border:1px solid var(--bd);border-radius:8px;padding:13px;cursor:pointer;transition:all .15s}
+.rpt-card:hover{background:var(--sf2);transform:translateY(-1px)}
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+// ===== NGÀY THÁNG =====
+const d=new Date();
+document.getElementById('pdate').textContent=d.toLocaleDateString('vi-VN',{weekday:'long',day:'2-digit',month:'2-digit',year:'numeric'});
+
+// ===== DỮ LIỆU ĐƠN HÀNG =====
+let orders=[
+  {id:'XK-2026-038',kh:'Hyundai Machinery',sp:'Máy ép thủy lực HY-500',tt:'Hàn Quốc',gt:420000000,nd:'15/05/2026',ts:'Đang xử lý'},
+  {id:'XK-2026-037',kh:'Samsung Heavy Ind.',sp:'Băng tải công nghiệp CT-200',tt:'Hàn Quốc',gt:185000000,nd:'12/05/2026',ts:'Hoàn tất'},
+  {id:'XK-2026-036',kh:'Mitsubishi Corp.',sp:'Máy tiện CNC MT-1000',tt:'Nhật Bản',gt:650000000,nd:'20/05/2026',ts:'Chờ duyệt'},
+  {id:'XK-2026-035',kh:'TSMC Equipment',sp:'Máy phun áp lực PA-300',tt:'Đài Loan',gt:310000000,nd:'08/05/2026',ts:'Hoàn tất'},
+  {id:'XK-2026-034',kh:'BASF Engineering',sp:'Thiết bị lọc khí FG-80',tt:'Đức',gt:275000000,nd:'30/05/2026',ts:'Đang xử lý'},
+  {id:'XK-2026-033',kh:'LG Electronics',sp:'Robot hàn tự động RH-6',tt:'Hàn Quốc',gt:890000000,nd:'25/05/2026',ts:'Đang xử lý'},
+  {id:'XK-2026-032',kh:'Toyota Industries',sp:'Xe nâng điện XN-3T',tt:'Nhật Bản',gt:195000000,nd:'03/05/2026',ts:'Hoàn tất'},
+  {id:'XK-2026-031',kh:'Foxconn Tech',sp:'Máy dập tự động DA-100',tt:'Đài Loan',gt:530000000,nd:'01/05/2026',ts:'Đã hủy'},
+  {id:'XK-2026-030',kh:'Kia Motors',sp:'Máy ép phun nhựa EP-200',tt:'Hàn Quốc',gt:360000000,nd:'28/04/2026',ts:'Hoàn tất'},
+  {id:'XK-2026-029',kh:'Siemens AG',sp:'Biến tần điều tốc BT-55kW',tt:'Đức',gt:145000000,nd:'22/04/2026',ts:'Hoàn tất'},
+];
+let oc=-1,od=1,currentOrder={};
+
+function fmtGt(v){return'₫ '+v.toLocaleString('vi-VN')}
+function getBadge(ts){return{'Hoàn tất':'bg','Đang xử lý':'bb','Chờ duyệt':'by','Đã hủy':'br'}[ts]||'bb'}
+
+function renderOrds(data){
+  document.getElementById('ordBody').innerHTML=data.map(r=>`<tr onclick="showOrder('${r.id}')">
+    <td style="font-weight:700;color:var(--ac)">${r.id}</td>
+    <td>${r.kh}</td>
+    <td style="max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.sp}</td>
+    <td>${r.tt}</td>
+    <td style="font-weight:700">${fmtGt(r.gt)}</td>
+    <td>${r.nd}</td>
+    <td><span class="badge ${getBadge(r.ts)}">${r.ts}</span></td>
+    <td onclick="event.stopPropagation()">
+      <i class="ti ti-eye" title="Xem chi tiết" style="cursor:pointer;font-size:14px;color:var(--t2);margin-right:6px" onclick="showOrder('${r.id}')"></i>
+      <i class="ti ti-file-export" title="Xuất báo cáo" style="cursor:pointer;font-size:14px;color:var(--t2)" onclick="alert('Tính năng tạo báo cáo: mở trong Claude.ai để dùng đầy đủ!')"></i>
+    </td>
+  </tr>`).join('');
+  const t=orders.length;
+  document.getElementById('totalOrd').textContent=t+' đơn';
+  document.getElementById('pendOrd').textContent=orders.filter(x=>x.ts==='Chờ duyệt').length+' đơn';
+  document.getElementById('doneOrd').textContent=orders.filter(x=>x.ts==='Hoàn tất').length+' đơn';
+  document.getElementById('cancelOrd').textContent=orders.filter(x=>x.ts==='Đã hủy').length+' đơn';
+  document.getElementById('ordPI').textContent='Hiển thị 1–'+data.length+' / '+t+' đơn';
+  document.getElementById('orderBadge').textContent=orders.filter(x=>x.ts==='Chờ duyệt'||x.ts==='Đang xử lý').length;
+}
+
+function filterOrd(){
+  const q=(document.getElementById('gs').value+(document.getElementById('osearch')?document.getElementById('osearch').value:'')).toLowerCase();
+  const sf=document.getElementById('stF')?document.getElementById('stF').value:'';
+  const cf=document.getElementById('ctF')?document.getElementById('ctF').value:'';
+  let dd=orders.filter(r=>(!q||(r.id+r.kh+r.sp+r.tt).toLowerCase().includes(q))&&(!sf||r.ts===sf)&&(!cf||r.tt===cf));
+  if(oc>=0){const ks=['id','kh','sp','tt','gt','nd','ts'];dd.sort((a,b)=>od*(a[ks[oc]]<b[ks[oc]]?-1:1));}
+  renderOrds(dd);
+}
+function sortO(c){if(oc===c)od*=-1;else{oc=c;od=1;}filterOrd();}
+renderOrds(orders);
+
+function showOrder(id){
+  currentOrder=orders.find(x=>x.id===id);if(!currentOrder)return;
+  document.getElementById('mTitle').textContent='Chi tiết: '+currentOrder.id;
+  document.getElementById('mSubtitle').textContent=currentOrder.kh+' · '+currentOrder.tt;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="mrow">
+      <div class="mfield"><div class="mfl">Mã đơn hàng</div><div class="mfv" style="color:var(--ac);font-weight:700">${currentOrder.id}</div></div>
+      <div class="mfield"><div class="mfl">Khách hàng</div><div class="mfv">${currentOrder.kh}</div></div>
+    </div>
+    <div class="mrow">
+      <div class="mfield"><div class="mfl">Sản phẩm / Thiết bị</div><div class="mfv">${currentOrder.sp}</div></div>
+      <div class="mfield"><div class="mfl">Thị trường xuất khẩu</div><div class="mfv">${currentOrder.tt}</div></div>
+    </div>
+    <div class="mrow">
+      <div class="mfield"><div class="mfl">Giá trị đơn hàng</div><div class="mfv" style="font-size:16px;font-weight:700;color:var(--c2)">${fmtGt(currentOrder.gt)}</div></div>
+      <div class="mfield"><div class="mfl">Ngày giao dự kiến</div><div class="mfv">${currentOrder.nd}</div></div>
+    </div>
+    <div class="mfield" style="margin-bottom:12px"><div class="mfl">Trạng thái</div><div class="mfv"><span class="badge ${getBadge(currentOrder.ts)}" style="font-size:12px;padding:4px 12px">${currentOrder.ts}</span></div></div>
+    <div style="font-size:11px;font-weight:700;color:var(--t2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px">Tiến trình xử lý</div>
+    <div class="tl-steps">
+      <div class="tl-step"><div class="tl-dot done"></div><div class="tl-line"></div><div><div class="tl-txt">Đơn hàng đã được tạo</div><div class="tl-sub">Hệ thống xác nhận</div></div></div>
+      <div class="tl-step"><div class="tl-dot done"></div><div class="tl-line"></div><div><div class="tl-txt">Kiểm tra sản phẩm & đóng gói</div><div class="tl-sub">QC đã xác nhận</div></div></div>
+      <div class="tl-step"><div class="tl-dot ${currentOrder.ts==='Hoàn tất'?'done':'cur'}"></div><div class="tl-line"></div><div><div class="tl-txt">Xuất kho & vận chuyển quốc tế</div><div class="tl-sub">${currentOrder.ts==='Hoàn tất'?'Đã giao thành công':'Đang xử lý'}</div></div></div>
+      <div class="tl-step"><div class="tl-dot ${currentOrder.ts==='Hoàn tất'?'done':''}"></div><div><div class="tl-txt">Xác nhận nhận hàng từ đối tác</div><div class="tl-sub">${currentOrder.ts==='Hoàn tất'?'Hoàn tất':'Chờ xác nhận'}</div></div></div>
+    </div>`;
+  document.getElementById('modalBg').classList.add('open');
+}
+function closeModal(e){if(e.target===document.getElementById('modalBg'))closeModalDirect();}
+function closeModalDirect(){document.getElementById('modalBg').classList.remove('open');}
+function closeAddModal(e){if(e.target===document.getElementById('addModal'))document.getElementById('addModal').classList.remove('open');}
+function addOrder(){
+  const id=document.getElementById('f-id').value,kh=document.getElementById('f-kh').value,sp=document.getElementById('f-sp').value,tt=document.getElementById('f-tt').value,gt=parseInt(document.getElementById('f-gt').value)||0,nd=document.getElementById('f-nd').value,ts=document.getElementById('f-ts').value;
+  if(!kh||!sp){alert('Vui lòng điền đầy đủ thông tin!');return;}
+  const nd2=nd?nd.split('-').reverse().join('/'):'--/--/----';
+  orders.unshift({id,kh,sp,tt,gt,nd:nd2,ts});
+  filterOrd();
+  document.getElementById('addModal').classList.remove('open');
+}
+
+// ===== BIỂU ĐỒ =====
+let revChart;
+function buildRev(type){
+  if(revChart)revChart.destroy();
+  revChart=new Chart(document.getElementById('revC'),{type,data:{labels:['T1','T2','T3','T4','T5'],datasets:[
+    {label:'Nội địa',data:[2.8,3.1,2.4,3.6,3.2],backgroundColor:'rgba(59,130,246,.65)',borderColor:'#3b82f6',borderWidth:2,borderRadius:type==='bar'?4:0,tension:.4},
+    {label:'Xuất khẩu',data:[1.2,1.5,1.8,2.1,1.6],backgroundColor:'rgba(16,185,129,.65)',borderColor:'#10b981',borderWidth:2,borderRadius:type==='bar'?4:0,tension:.4,borderDash:type==='line'?[4,3]:[]}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{callback:v=>v+'tỷ',color:'#9ca3af',font:{size:10}},grid:{color:'rgba(156,163,175,.1)'}},x:{ticks:{color:'#9ca3af',font:{size:10}},grid:{display:false}}}}});
+}
+buildRev('bar');
+function swRev(t,el){document.querySelectorAll('.tgb').forEach(b=>b.classList.remove('act'));el.classList.add('act');buildRev(t);}
+
+new Chart(document.getElementById('donutC'),{type:'doughnut',data:{labels:['Đang xử lý','Hoàn tất','Chờ duyệt','Đã hủy'],datasets:[{data:[42,35,15,8],backgroundColor:['#3b82f6','#10b981','#f59e0b','#ef4444'],borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'70%'}});
+
+new Chart(document.getElementById('mktC'),{type:'bar',data:{labels:['🇰🇷 Hàn Quốc','🇯🇵 Nhật Bản','🇹🇼 Đài Loan','🇩🇪 Đức'],datasets:[{data:[2.17,1.25,0.85,0.55],backgroundColor:['rgba(59,130,246,.75)','rgba(16,185,129,.75)','rgba(245,158,11,.75)','rgba(139,92,246,.75)'],borderRadius:5}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,ticks:{callback:v=>v+'tỷ',color:'#9ca3af',font:{size:10}},grid:{color:'rgba(156,163,175,.1)'}},y:{ticks:{color:'#9ca3af',font:{size:10}},grid:{display:false}}}}});
+
+// ===== SPARKLINES =====
+function buildSparkline(id,data,color){
+  const c=document.getElementById(id);if(!c)return;
+  const mx=Math.max(...data);
+  c.innerHTML=data.map(v=>`<div class="sp-bar" style="height:${Math.round((v/mx)*100)}%;background:${color}"></div>`).join('');
+}
+buildSparkline('spk1',[2.1,3.8,2.9,4.1,3.5,4.82],'#3b82f6');
+buildSparkline('spk2',[28,31,25,35,33,38],'#10b981');
+buildSparkline('spk3',[10,14,11,16,12,14],'#f59e0b');
+buildSparkline('spk4',[82,85,84,86,85,87],'#8b5cf6');
+
+// ===== ACTIVITY FEED =====
+const acts=[
+  {ic:'ti-shopping-cart',col:'rgba(59,130,246,.1)',icol:'#3b82f6',txt:'Đơn <strong>XK-2026-039</strong> từ Hyundai vừa tạo',time:'5 phút trước'},
+  {ic:'ti-circle-check',col:'rgba(16,185,129,.1)',icol:'#10b981',txt:'Đơn <strong>XK-2026-037</strong> đã giao thành công',time:'32 phút trước'},
+  {ic:'ti-tool',col:'rgba(245,158,11,.1)',icol:'#f59e0b',txt:'Robot hàn RH-6 cần kiểm tra định kỳ',time:'2 giờ trước'},
+  {ic:'ti-user-plus',col:'rgba(139,92,246,.1)',icol:'#8b5cf6',txt:'Khách hàng mới: <strong>Siemens AG (Đức)</strong>',time:'Hôm qua'},
+  {ic:'ti-alert-triangle',col:'rgba(239,68,68,.1)',icol:'#ef4444',txt:'Tồn kho Robot RH-6 còn 2 đơn vị',time:'Hôm qua'},
+];
+document.getElementById('actFeed').innerHTML=acts.map(a=>`<div class="af-item"><div class="af-ic" style="background:${a.col}"><i class="ti ${a.ic}" style="color:${a.icol}"></i></div><div class="af-main"><div class="af-txt">${a.txt}</div><div class="af-time">${a.time}</div></div></div>`).join('');
+
+// ===== CALENDAR =====
+const calDays=['CN','T2','T3','T4','T5','T6','T7'];
+const evs={3:'#3b82f6',7:'#10b981',8:'#ef4444',10:'#f59e0b',12:'#3b82f6',15:'#8b5cf6',20:'#10b981',25:'#f59e0b',28:'#3b82f6'};
+function buildCal(){
+  const g=document.getElementById('calGrid');if(!g)return;
+  g.innerHTML=calDays.map(d=>`<div class="cal-head">${d}</div>`).join('');
+  const first=new Date(2026,4,1).getDay();
+  for(let i=0;i<first;i++)g.innerHTML+=`<div class="cal-day other"></div>`;
+  for(let d=1;d<=31;d++){
+    const ev=evs[d];const isToday=d===7;
+    g.innerHTML+=`<div class="cal-day${isToday?' today':''}${ev?' has-ev':''}" title="${ev?'Có lịch bảo trì':''}">
+      <span>${d}</span>${ev?`<span class="ev-dot" style="background:${ev}"></span>`:''}
+    </div>`;
+  }
+}
+buildCal();
+
+// ===== DARK MODE =====
+let dark=false;
+function toggleDark(){dark=!dark;document.body.classList.toggle('dark',dark);document.getElementById('dkIco').className=dark?'ti ti-sun':'ti ti-moon-stars';}
+
+// ===== SIDEBAR THU GỌN =====
+let col=false;
+function toggleSB(){
+  col=!col;
+  document.getElementById('SB').classList.toggle('col',col);
+  document.querySelectorAll('.hc').forEach(el=>el.style.display=col?'none':'');
+  document.getElementById('sbIc').className=col?'ti ti-layout-sidebar-right-collapse':'ti ti-layout-sidebar-left-collapse';
+}
+
+// ===== CHUYỂN TRANG =====
+function gp(pid,el,name){
+  document.querySelectorAll('.pg').forEach(p=>p.classList.remove('show'));
+  document.getElementById(pid).classList.add('show');
+  if(el){document.querySelectorAll('.ni').forEach(n=>n.classList.remove('act'));el.classList.add('act');}
+  document.getElementById('ptitle').innerHTML=name+' <small>'+document.getElementById('pdate').textContent+'</small>';
+  setTimeout(()=>{
+    if(pid==='pg-analytics'&&!document.getElementById('mktStack')._done){
+      new Chart(document.getElementById('mktStack'),{type:'bar',data:{labels:['T1','T2','T3','T4','T5'],datasets:[
+        {label:'Hàn Quốc',data:[1.2,1.4,1.1,1.8,1.6],backgroundColor:'rgba(59,130,246,.8)',borderRadius:3},
+        {label:'Nhật Bản',data:[0.6,0.8,0.9,1.0,0.9],backgroundColor:'rgba(16,185,129,.8)',borderRadius:3},
+        {label:'Đài Loan',data:[0.4,0.5,0.6,0.7,0.5],backgroundColor:'rgba(245,158,11,.8)',borderRadius:3},
+        {label:'Đức',data:[0,0,0.2,0.3,0.3],backgroundColor:'rgba(139,92,246,.8)',borderRadius:3}
+      ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{stacked:true,ticks:{color:'#9ca3af',font:{size:10}},grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{callback:v=>v+'tỷ',color:'#9ca3af',font:{size:10}},grid:{color:'rgba(156,163,175,.1)'}}}}});
+      new Chart(document.getElementById('mktPie'),{type:'doughnut',data:{labels:['Hàn Quốc','Nhật Bản','Đài Loan','Đức'],datasets:[{data:[45,28,18,9],backgroundColor:['#3b82f6','#10b981','#f59e0b','#8b5cf6'],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'65%'}});
+      document.getElementById('mktStack')._done=true;
+    }
+    if(pid==='pg-inventory'&&!document.getElementById('invC')._done){
+      new Chart(document.getElementById('invC'),{type:'bar',data:{labels:['T1','T2','T3','T4','T5'],datasets:[
+        {label:'Xuất kho',data:[38,42,35,48,54],backgroundColor:'rgba(59,130,246,.7)',borderRadius:4},
+        {label:'Nhập kho',data:[50,30,45,40,35],backgroundColor:'rgba(16,185,129,.7)',borderRadius:4}
+      ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{color:'#9ca3af',font:{size:10}},grid:{color:'rgba(156,163,175,.1)'}},x:{ticks:{color:'#9ca3af',font:{size:10}},grid:{display:false}}}}});
+      document.getElementById('invC')._done=true;
+    }
+  },100);
+}
+</script>
+</body>
+</html>
